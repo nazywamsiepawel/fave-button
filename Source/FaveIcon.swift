@@ -21,7 +21,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 import UIKit
 
 class FaveIcon: UIView {
@@ -91,13 +90,15 @@ extension FaveIcon{
 extension FaveIcon{
     
     func animateSelect(_ isSelected: Bool = false, fillColor: UIColor, duration: Double = 0.5, delay: Double = 0){
-        if nil == tweenValues{
+        let animate = duration > 0.0
+        
+        if nil == tweenValues && animate {
             tweenValues = generateTweenValues(from: 0, to: 1.0, duration: CGFloat(duration))
         }
         
         CATransaction.begin()
         CATransaction.setDisableActions(true)
-            iconLayer.fillColor = fillColor.cgColor
+        iconLayer.fillColor = fillColor.cgColor
         CATransaction.commit()
         
         let selectedDelay = isSelected ? delay : 0
@@ -110,7 +111,11 @@ extension FaveIcon{
                 options: .curveLinear,
                 animations: {
                     self.alpha = 1
-                }, completion: nil)
+            }, completion: nil)
+        }
+        
+        guard animate else {
+            return
         }
         
         let scaleAnimation = Init(CAKeyframeAnimation(keyPath: "transform.scale")){
